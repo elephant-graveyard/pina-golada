@@ -24,9 +24,8 @@ package cmd
 
 import (
 	"fmt"
-	"go/parser"
-	"go/token"
 	"os"
+	"path/filepath"
 	"regexp"
 
 	"github.com/spf13/cobra"
@@ -44,15 +43,16 @@ var generateCommand = &cobra.Command{
 	Long: `Golada will iterate over each file in the current directory and sub-directory. 
 	If it finds an interface requesting and defining an asset provider, it will generate one`,
 	Run: func(c *cobra.Command, args []string) {
-		fileTree, _ := parser.ParseDir(token.NewFileSet(), "./", func(f os.FileInfo) bool {
-			return !f.IsDir() && GoFileSelector.Match([]byte(f.Name()))
-		}, parser.ParseComments)
-
-		for name, file := range fileTree {
-			fmt.Println(name)
-			for _, f := range file.Files {
-				fmt.Println(f.Comments)
+		filepath.Walk(".", func(root string, file os.FileInfo, e error) error {
+			if GoFileSelector.Match([]byte(file.Name())) {
+				fmt.Println(file.Name())
 			}
-		}
+			return nil
+		})
+		fmt.Println("a")
 	},
+}
+
+func init() {
+	rootCmd.AddCommand(generateCommand)
 }

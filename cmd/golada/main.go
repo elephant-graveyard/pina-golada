@@ -18,30 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// go:generate echo Hello there
-
-package cmd
+package main
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
-	"github.com/spf13/cobra"
+	"github.com/homeport/pina-golada/internal/golada/cmd"
 )
 
-var version string
-
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
-	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
-		}
-
-		bunt.Print("pina-golada currently runs on ", version)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(versionCommand)
+func main() {
+	cmd.Execute()
 }

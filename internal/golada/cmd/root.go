@@ -18,30 +18,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// go:generate echo Hello there
-
 package cmd
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
+	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 )
 
-var version string
-
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
-	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
-		}
-
-		bunt.Print("pina-golada currently runs on ", version)
-	},
+// rootCmd represents the base command when called without any subcommands
+var rootCmd = &cobra.Command{
+	Use:   "golada",
+	Short: "A tool to generate interface implementations, providing asset blobs",
+	Long:  `A tool to generate interface implementations, providing asset blobs in different compression types. The implementation will be injected into variables to allow a cleanup of generated classes after a build`,
 }
 
-func init() {
-	rootCmd.AddCommand(versionCommand)
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
