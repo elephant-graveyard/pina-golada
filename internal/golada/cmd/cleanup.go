@@ -21,25 +21,51 @@
 package cmd
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
+	"bufio"
+	"github.com/homeport/pina-golada/internal/golada/builder"
 	"github.com/spf13/cobra"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
-var version string
-
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
+var cleanupCommand = &cobra.Command{
+	Use:   "cleanup",
+	Short: "Cleans all the generated files",
+	Long:  "Cleanup will iterate over every go file in the project and delete it if it does start with PinaGolada's identifier string",
 	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
-		}
+		e := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+			if GoFileSelector.Match([]byte(info.Name())) {
+				file, err := os.Open(path)
+				if err != nil {
+					return err
+				}
 
-		_, _ = bunt.Print("pina-golada currently runs on ", version)
+				fileReader := bufio.NewReader(file)
+				line, _, err := fileReader.ReadLine()
+				if err != nil {
+					_ = file.Close()
+					return err
+				}
+
+				if err := file.Close(); err != nil {
+					return err
+				}
+				if strings.EqualFold(string(line), builder.IdentifierString) {
+					if err := os.Remove(path); err != nil {
+						return err
+					}
+				}
+			}
+			return nil
+		})
+		if e != nil {
+			log.Fatalf("could not iterrate over the files in this directory %s", e.Error())
+		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(versionCommand)
+	rootCmd.AddCommand(cleanupCommand)
 }

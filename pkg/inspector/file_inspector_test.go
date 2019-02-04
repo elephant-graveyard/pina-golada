@@ -18,28 +18,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package inspector
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
-	"github.com/spf13/cobra"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"strings"
+	"testing"
 )
 
-var version string
-
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
-	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
-		}
-
-		_, _ = bunt.Print("pina-golada currently runs on ", version)
-	},
+func TestInspector(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "pgl pkg inspector")
 }
 
-func init() {
-	rootCmd.AddCommand(versionCommand)
-}
+var _ = Describe("Tests basic inspector functionality", func() {
+	_ = It("should find this specific file", func() {
+		stream, er := NewFileStream(".")
+		Expect(er).To(BeNil())
+		stream.Filter(func(file File) bool {
+			return strings.Contains(file.FileInfo.Name(), "file_inspector_test.go")
+		})
+
+		Expect(stream.Count()).To(BeEquivalentTo(1))
+	})
+})

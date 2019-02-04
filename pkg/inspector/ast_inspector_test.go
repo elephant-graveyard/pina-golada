@@ -18,28 +18,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package inspector
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
-	"github.com/spf13/cobra"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"strings"
 )
 
-var version string
+// Test han shot first
+var Test = ""
 
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
-	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
-		}
-
-		_, _ = bunt.Print("pina-golada currently runs on ", version)
-	},
+// TestInterface black magic
+// its black magic i swear
+type TestInterface interface {
+	// Foo test
+	Foo() bool
 }
 
-func init() {
-	rootCmd.AddCommand(versionCommand)
-}
+var _ = Describe("Testing default ast stream functionality", func() {
+	_ = It("should find the test interface defined here", func() {
+		stream, e := NewFileStream("./")
+		Expect(e).To(BeNil())
+
+		astStream := NewAstStream(stream.Filter(func(file File) bool {
+			return strings.Contains(file.FileInfo.Name(), "ast_inspector_test.go")
+		}))
+		interfaces := astStream.Find()
+		Expect(len(interfaces)).To(BeEquivalentTo(1))
+
+		foundInterface := interfaces[0]
+		Expect(foundInterface.Name.Name).To(BeEquivalentTo("TestInterface"))
+		Expect(foundInterface.Docs.Text()).To(ContainSubstring("TestInterface black magic"))
+
+		methods := foundInterface.InterfaceReference.Methods
+		Expect(methods.NumFields()).To(BeEquivalentTo(1))
+		Expect(methods.List[0].Doc.Text()).To(ContainSubstring("Foo test"))
+
+	})
+})

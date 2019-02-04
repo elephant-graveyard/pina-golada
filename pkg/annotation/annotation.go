@@ -18,28 +18,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package annotation
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
-	"github.com/spf13/cobra"
+	"errors"
 )
 
-var version string
+var (
+	// ErrTooManyAnnotations is the error that is thrown when more than one annotation of the same type is declared. The struct will still be filled with the first declared annotation
+	ErrTooManyAnnotations = errors.New("the annotation type was declared multiple times in the comment")
 
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
-	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
-		}
+	// ErrNoAnnotation is the error that is thrown when no annotations were found in the comment
+	ErrNoAnnotation = errors.New("the requested annotation type was not find in the comment")
+)
 
-		_, _ = bunt.Print("pina-golada currently runs on ", version)
-	},
+// Parser is an interface that is capable of parsing an annotation based on a string.
+type Parser interface {
+	// Parse parses the comment into the annotation interface.
+	// It will search for the identifier in the comment and parse the entire annotation behind it
+	// The method will
+
+	Parse(comment string, annotation Annotation) error
 }
 
-func init() {
-	rootCmd.AddCommand(versionCommand)
+// Annotation is a basic interface all annotations have to follow, as they need to provide their identifier
+type Annotation interface {
+	// GetIdentifier returns the identifier of the annotation
+	GetIdentifier() string
 }

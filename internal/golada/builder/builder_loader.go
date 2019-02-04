@@ -18,28 +18,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package builder
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
-	"github.com/spf13/cobra"
+	"github.com/homeport/pina-golada/pkg/files"
+	"github.com/homeport/pina-golada/pkg/files/paths"
+	"os"
+	"path/filepath"
 )
 
-var version string
+// Load from disk loads the file into the directory from the disk
+func loadFromDisk(root files.Directory, path string) (isDir bool, directory files.Directory, err error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return false, nil, err
+	}
 
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
-	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
+	if info.IsDir() {
+		subDirectory := root.NewDirectory(paths.Of(filepath.Base(path))) // Load into sub path so we can store the name
+		err := files.LoadFromDisk(subDirectory, path)
+		if err != nil {
+			return false, nil, err
 		}
+		return true, root, nil
+	}
 
-		_, _ = bunt.Print("pina-golada currently runs on ", version)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(versionCommand)
+	if err := files.LoadFromDisk(root, path); err != nil {
+		return false, nil, err
+	}
+	return false, root, nil
 }

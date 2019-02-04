@@ -54,7 +54,7 @@ while read -r OS ARCH; do
     -tags netgo \
     -ldflags "-s -w -extldflags '-static' -X github.com/homeport/pina-golada/internal/golada/cmd.version=${TOOL_VERSION}" \
     -o "${TARGET_FILE}" \
-    cmd/dom/main.go
+    cmd/golada/main.go
 
 done <<EOL
 darwin amd64

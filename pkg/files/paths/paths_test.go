@@ -18,28 +18,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package paths
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
-	"github.com/spf13/cobra"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"testing"
 )
 
-var version string
-
-var versionCommand = &cobra.Command{
-	Use:   "version",
-	Short: "Displays the version",
-	Long:  "Displays the version of the Pina Golada tool. This will indicate the commit after the last tag",
-	Run: func(c *cobra.Command, args []string) {
-		if len(version) < 1 {
-			version = "development"
-		}
-
-		_, _ = bunt.Print("pina-golada currently runs on ", version)
-	},
+func TestPaths(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "pgl pkg files paths")
 }
 
-func init() {
-	rootCmd.AddCommand(versionCommand)
-}
+var _ = Describe("should parse paths correctly", func() {
+	_ = It("should pop correctly", func() {
+		path := Of("/usr/homeport/home/test.go")
+		Expect(path.Pop().String()).To(BeEquivalentTo("usr"))
+		Expect(path.Pop().String()).To(BeEquivalentTo("homeport"))
+		Expect(path.Pop().String()).To(BeEquivalentTo("home"))
+		Expect(path.Pop().String()).To(BeEquivalentTo("test.go"))
+		Expect(path.Pop().String()).To(BeEquivalentTo(""))
+	})
+})
