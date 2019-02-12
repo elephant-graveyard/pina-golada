@@ -21,9 +21,10 @@
 package paths
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"testing"
 )
 
 func TestPaths(t *testing.T) {

@@ -21,9 +21,10 @@
 package inspector
 
 import (
+	"strings"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"strings"
 )
 
 // Test han shot first

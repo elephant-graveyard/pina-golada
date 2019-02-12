@@ -21,10 +21,11 @@
 package builder
 
 import (
-	"github.com/homeport/pina-golada/pkg/files"
-	"github.com/homeport/pina-golada/pkg/files/paths"
 	"os"
 	"path/filepath"
+
+	"github.com/homeport/pina-golada/pkg/files"
+	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
 // Load from disk loads the file into the directory from the disk

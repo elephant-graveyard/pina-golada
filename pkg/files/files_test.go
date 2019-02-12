@@ -22,12 +22,14 @@ package files
 
 import (
 	"bytes"
-	"github.com/homeport/pina-golada/pkg/files/paths"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
+	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
 func TestFiles(t *testing.T) {

@@ -22,9 +22,10 @@ package compressor
 
 import (
 	"bytes"
-	"github.com/homeport/pina-golada/pkg/files"
 	"io"
 	"strings"
+
+	"github.com/homeport/pina-golada/pkg/files"
 )
 
 var (
