@@ -29,7 +29,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "golada",
+	Use:   "pina-golada",
 	Short: "A tool to generate interface implementations, providing asset blobs",
 	Long:  `A tool to generate interface implementations, providing asset blobs in different compression types. The implementation will be injected into variables to allow a cleanup of generated classes after a build`,
 }
