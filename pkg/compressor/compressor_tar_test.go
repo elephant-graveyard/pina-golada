@@ -22,11 +22,13 @@ package compressor
 
 import (
 	"bytes"
-	"github.com/homeport/pina-golada/pkg/files"
-	"github.com/homeport/pina-golada/pkg/files/paths"
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"testing"
+
+	"github.com/homeport/pina-golada/pkg/files"
+	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
 func TestCompressor(t *testing.T) {

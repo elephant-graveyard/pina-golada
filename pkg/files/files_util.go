@@ -22,10 +22,11 @@ package files
 
 import (
 	"bytes"
-	"github.com/homeport/pina-golada/pkg/files/paths"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
 // WalkFileTree iterates over each and every file instance found in the directory

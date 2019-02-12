@@ -21,9 +21,10 @@
 package files
 
 import (
-	"github.com/homeport/pina-golada/pkg/files/paths"
 	"io"
 	"io/ioutil"
+
+	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
 // File represents a digital file object

@@ -21,9 +21,10 @@
 package annotation
 
 import (
-	"gopkg.in/yaml.v2"
 	"regexp"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 // PropertyParser is a csv implementation of the annotation parser.

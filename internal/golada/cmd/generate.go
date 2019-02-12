@@ -21,16 +21,18 @@
 package cmd
 
 import (
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
-	"github.com/homeport/pina-golada/internal/golada/builder"
-	"github.com/homeport/pina-golada/pkg/annotation"
-	"github.com/homeport/pina-golada/pkg/inspector"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/homeport/gonvenience/pkg/v1/bunt"
+
+	"github.com/homeport/pina-golada/internal/golada/builder"
+	"github.com/homeport/pina-golada/pkg/annotation"
+	"github.com/homeport/pina-golada/pkg/inspector"
 
 	"github.com/spf13/cobra"
 )

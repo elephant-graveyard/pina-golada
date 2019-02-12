@@ -24,10 +24,11 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
-	"github.com/homeport/pina-golada/pkg/files"
-	"github.com/homeport/pina-golada/pkg/files/paths"
 	"io"
 	"path/filepath"
+
+	"github.com/homeport/pina-golada/pkg/files"
+	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
 // Tar is an implementation of the compressor interface which compresses to .tar.gz files

@@ -27,8 +27,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/homeport/pina-golada/internal/golada/builder"
 	"github.com/spf13/cobra"
+
+	"github.com/homeport/pina-golada/internal/golada/builder"
 )
 
 var cleanupCommand = &cobra.Command{

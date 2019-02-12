@@ -25,13 +25,14 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"path/filepath"
+	"strings"
+
 	"github.com/homeport/pina-golada/pkg/annotation"
 	"github.com/homeport/pina-golada/pkg/compressor"
 	"github.com/homeport/pina-golada/pkg/files"
 	"github.com/homeport/pina-golada/pkg/generator"
 	"github.com/homeport/pina-golada/pkg/inspector"
-	"path/filepath"
-	"strings"
 )
 
 var (

@@ -21,13 +21,15 @@
 package builder
 
 import (
+	"strings"
+	"testing"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
 	"github.com/homeport/pina-golada/pkg/annotation"
 	"github.com/homeport/pina-golada/pkg/files"
 	"github.com/homeport/pina-golada/pkg/inspector"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-	"strings"
-	"testing"
 )
 
 func TestBuilder(t *testing.T) {
