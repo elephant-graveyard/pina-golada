@@ -32,6 +32,14 @@ Git commit messages should be meaningful and follow the rules nicely written dow
 > 1. Wrap the body at 72 characters
 > 1. Use the body to explain what and why vs. how
 
+### Installation
+
+To install pina-golada on macOS systems, you can use the homeport Homebrew tap:
+
+```sh
+brew install homeport/tap/pina-golada
+```
+
 ### Running test cases and binaries generation
 
 There are multiple make targets, but running `all` does everything you want in one call.
