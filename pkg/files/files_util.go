@@ -22,7 +22,6 @@ package files
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -98,7 +97,7 @@ func WriteToDisk(directory Directory, path string, overwrite bool) (e error) {
 	}
 
 	if info != nil && !info.IsDir() {
-		return errors.New(fmt.Sprintf("provided path pointed to file %s", path))
+		return fmt.Errorf("provided path pointed to file %s", path)
 	}
 
 	if directory.Parent() != nil { // If the directory is not a root directory, we want to create the directory
@@ -125,7 +124,7 @@ func writeFileToDisk(file File, directoryPath string, overwrite bool) (e error) 
 
 	if info != nil { // Checking if the path currently exists
 		if info.IsDir() { // Checking if the path is a directory
-			return errors.New(fmt.Sprintf("provided path pointed to directory %s", path))
+			return fmt.Errorf("provided path pointed to directory %s", path)
 		}
 
 		if !overwrite { // Checking if the file should be overwritten given it exists
@@ -163,7 +162,7 @@ func writeDirectoryToDisk(directory Directory, directoryPath string, overwrite b
 	}
 
 	if info != nil && !info.IsDir() {
-		return errors.New(fmt.Sprintf("provided path pointed to file %s", directoryPath))
+		return fmt.Errorf("provided path pointed to file %s", directoryPath)
 	}
 
 	for _, dir := range directory.Directories() {
