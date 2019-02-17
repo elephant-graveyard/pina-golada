@@ -93,13 +93,13 @@ func Generate(path string, parser annotation.Parser) {
 			log.Fatalf("Could not build file due to " + e.Error())
 		}
 		baseFileName := filepath.Base(i.Name.Name) + ".go"
-		implementationFileName := filepath.Join(filepath.Dir(i.File.Path), "pgl"+baseFileName)
+		implementationFileName := filepath.Join(filepath.Dir(i.File.OSFile.Path), "pgl"+baseFileName)
 		if err := ioutil.WriteFile(implementationFileName, output, os.ModePerm); err != nil {
 			log.Fatal("could not create output file due to " + err.Error())
 		}
 
 		_, _ = bunt.Printf("Aqua{%s}➤ Generated asset provider for LimeGreen{%s}\n", "Pina-Golada",
-			i.File.FileInfo.Name()+"#"+i.Name.Name)
+			i.File.OSFile.FileInfo.Name()+"#"+i.Name.Name)
 	}
 }
 

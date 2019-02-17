@@ -42,7 +42,6 @@ var (
 
 // PinaGoladaInterface is the struct used for the pina golada interface annotation
 type PinaGoladaInterface struct {
-	Package  string `yaml:"package"`
 	Injector string `yaml:"injector"`
 }
 
@@ -77,14 +76,11 @@ func NewBuilder(target *inspector.AstInterface, interfaceAnnotation *PinaGoladaI
 
 // BuildFile Builds the file
 func (b Builder) BuildFile() (by []byte, err error) {
-	if len(b.interfaceAnnotation.Package) < 1 {
-		return nil, errors.New("no package defined on " + b.target.Name.Name)
-	}
 	if len(b.interfaceAnnotation.Injector) < 1 {
 		return nil, errors.New("no injector variable defined on " + b.target.Name.Name)
 	}
 
-	goGenerator := generator.NewFileGoGenerator(b.interfaceAnnotation.Package)
+	goGenerator := generator.NewFileGoGenerator(b.target.File.FileReference.Name.Name)
 	structName := "PGL" + b.target.Name.Name
 	receiverType := "p *" + structName
 
