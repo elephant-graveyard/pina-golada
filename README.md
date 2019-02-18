@@ -64,10 +64,11 @@ import (
 var TestInjectionPoint TestInterface
 
 // TestInterface is a testing interface for Pina-Golada. This interface will be implemented by Pina-Golada.
-// The package name has to match the package name in which this interface is found, the injector is the name of an exported
-// variable of the type of this interface. The instance of the compiled struct, implementing this interface, will stored in
-// the variable provided in the annotation below.
-// @pgl(package=test&injector=TestInjectionPoint)
+// The injector is the name of an exported variable of the type of this interface.
+// The instance of the compiled struct, implementing this interface, will stored in the variable provided in the
+// annotation below.
+//
+// @pgl(injector=TestInjectionPoint)
 type TestInterface interface {
 	
 	// GetAssetFile is the method that returns a virtual asset stored in the directory instance.
