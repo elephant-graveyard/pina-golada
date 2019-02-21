@@ -32,6 +32,14 @@ Git commit messages should be meaningful and follow the rules nicely written dow
 > 1. Wrap the body at 72 characters
 > 1. Use the body to explain what and why vs. how
 
+### Installation
+
+To install pina-golada on macOS systems, you can use the homeport Homebrew tap:
+
+```sh
+brew install homeport/tap/pina-golada
+```
+
 ### Running test cases and binaries generation
 
 There are multiple make targets, but running `all` does everything you want in one call.
@@ -56,10 +64,11 @@ import (
 var TestInjectionPoint TestInterface
 
 // TestInterface is a testing interface for Pina-Golada. This interface will be implemented by Pina-Golada.
-// The package name has to match the package name in which this interface is found, the injector is the name of an exported
-// variable of the type of this interface. The instance of the compiled struct, implementing this interface, will stored in
-// the variable provided in the annotation below.
-// @pgl(package=test&injector=TestInjectionPoint)
+// The injector is the name of an exported variable of the type of this interface.
+// The instance of the compiled struct, implementing this interface, will stored in the variable provided in the
+// annotation below.
+//
+// @pgl(injector=TestInjectionPoint)
 type TestInterface interface {
 	
 	// GetAssetFile is the method that returns a virtual asset stored in the directory instance.

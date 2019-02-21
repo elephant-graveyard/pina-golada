@@ -31,37 +31,47 @@ type AstFilter func(n *ast.Node) bool
 
 // AstStream is a stream of nodes that can be inspected and transformed
 type AstStream struct {
-	Nodes   []ast.Node
+	Nodes   [][]ast.Node
 	FileMap []*File
 }
 
 // Find returns the interfaces declared in the given AstStream
 func (a *AstStream) Find() []*AstInterface {
 	interfaces := make([]*AstInterface, 0)
-	genDecl := make([]*ast.GenDecl, 0)
+	for i, nodeArrayInFile := range a.Nodes { // Loop over all file linked nodes
 
-	for i, node := range a.Nodes {
-		switch nodeType := node.(type) {
-		case *ast.TypeSpec:
-			if nodeType.Name.IsExported() {
-				switch declaredType := nodeType.Type.(type) {
-				case *ast.InterfaceType:
-					interfaces = append(interfaces, &AstInterface{
-						InterfaceReference: declaredType,
-						Name:               nodeType.Name,
-						File:               *a.FileMap[i],
-					})
-				}
-			}
-		case *ast.GenDecl:
-			genDecl = append(genDecl, nodeType)
+		genDecl := make([]*ast.GenDecl, 0)
+
+		// This is the file node found in the array. We will only find one because we iterate over nodes of one file
+		fileNode := &AstFile{
+			OSFile: *a.FileMap[i],
 		}
-	}
 
-	for _, generalDeclaration := range genDecl {
-		for _, interfaceDeclaration := range interfaces {
-			if generalDeclaration.End() == interfaceDeclaration.InterfaceReference.End() {
-				interfaceDeclaration.Docs = generalDeclaration.Doc
+		for _, node := range nodeArrayInFile { // Loop over all nodes in one file
+			switch nodeType := node.(type) {
+			case *ast.TypeSpec:
+				if nodeType.Name.IsExported() {
+					switch declaredType := nodeType.Type.(type) {
+					case *ast.InterfaceType:
+						interfaces = append(interfaces, &AstInterface{
+							InterfaceReference: declaredType,
+							Name:               nodeType.Name,
+							File:               fileNode,
+						})
+					}
+				}
+			case *ast.GenDecl:
+				genDecl = append(genDecl, nodeType)
+			case *ast.File:
+				fileNode.FileReference = nodeType
+			}
+		}
+
+		for _, generalDeclaration := range genDecl {
+			for _, interfaceDeclaration := range interfaces {
+				if generalDeclaration.End() == interfaceDeclaration.InterfaceReference.End() {
+					interfaceDeclaration.Docs = generalDeclaration.Doc
+				}
 			}
 		}
 	}
@@ -74,7 +84,7 @@ type AstInterface struct {
 	InterfaceReference *ast.InterfaceType
 	Docs               *ast.CommentGroup
 	Name               *ast.Ident
-	File               File
+	File               *AstFile
 }
 
 // AstVariable is a variable that represents a variable
@@ -83,19 +93,29 @@ type AstVariable struct {
 	Docs           *ast.CommentGroup
 }
 
+// AstFile represents a file node of the ast package
+type AstFile struct {
+	FileReference *ast.File
+	OSFile        File
+}
+
 // NewAstStream creates a new ast stream instance
 func NewAstStream(fileStream *FileStream) (astStream *AstStream) {
-	nodes := make([]ast.Node, 0)
+	nodes := make([][]ast.Node, 0)
 	fileSet := token.NewFileSet()
 
 	fileMap := make([]*File, 0)
 	fileStream.ForEach(func(file File) {
 		parsedFile, _ := parser.ParseFile(fileSet, file.Path, nil, parser.ParseComments)
+		fileNodeSet := make([]ast.Node, 0)
+
 		ast.Inspect(parsedFile, func(node ast.Node) bool {
-			nodes = append(nodes, node)
-			fileMap = append(fileMap, &file)
+			fileNodeSet = append(fileNodeSet, node)
 			return true
 		})
+
+		nodes = append(nodes, fileNodeSet)
+		fileMap = append(fileMap, &file)
 	})
 
 	return &AstStream{

@@ -56,5 +56,7 @@ var _ = Describe("Testing default ast stream functionality", func() {
 		Expect(methods.NumFields()).To(BeEquivalentTo(1))
 		Expect(methods.List[0].Doc.Text()).To(ContainSubstring("Foo test"))
 
+		Expect(foundInterface.File.FileReference.Name.Name).To(BeEquivalentTo("inspector"))
+		Expect(foundInterface.File.OSFile.FileInfo.Name()).To(BeEquivalentTo("ast_inspector_test.go"))
 	})
 })

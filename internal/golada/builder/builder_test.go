@@ -21,6 +21,7 @@
 package builder
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -58,12 +59,12 @@ var _ = Describe("should generate files correctly", func() {
 		Expect(len(interfaces)).To(BeEquivalentTo(1))
 
 		builder := NewBuilder(interfaces[0], &PinaGoladaInterface{
-			Package:  "builder",
 			Injector: "AssetInjector",
 		}, annotation.NewPropertyParser())
 		b, e := builder.BuildFile()
 
 		Expect(e).To(BeNil())
 		Expect(b).To(Not(BeNil()))
+		fmt.Println(string(b)) // Printing it to the test console to manually debug builder errors
 	})
 })
