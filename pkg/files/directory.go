@@ -21,6 +21,7 @@
 package files
 
 import (
+	"bytes"
 	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
@@ -45,6 +46,8 @@ import (
 // DeleteDirectory deletes a directory
 //
 // Parent returns the directory this directory is found in
+//
+// AsRoot creates a deep copy of the current directory, but with the current directory as it's root
 type Directory interface {
 	Name() (name paths.Path)
 	AbsolutePath() (path paths.Path)
@@ -60,6 +63,7 @@ type Directory interface {
 	DeleteDirectory(path paths.Path)
 
 	Parent() (parentDirectory Directory)
+	AsRoot() (rootDirectory Directory)
 }
 
 // memoryDirectory is a in memory implementation of the directory interface
@@ -250,6 +254,36 @@ func (m *memoryDirectory) DeleteDirectory(path paths.Path) {
 // Parent returns the parent directory
 func (m *memoryDirectory) Parent() (parentDirectory Directory) {
 	return m.parent
+}
+
+// AsRoot creates a deep copy of the current directory, but with the current directory as it's root
+func (m *memoryDirectory) AsRoot() (rootDirectory Directory) {
+	root := NewRootDirectory()
+	if err := copyDirectory(m, root); err != nil {
+		return nil
+	}
+	return root
+}
+
+// copyDirectory copies the content of one directory into the other
+func copyDirectory(original Directory, new Directory) error {
+	for _, f := range original.Files() {
+		content := &bytes.Buffer{}
+		if err := f.Write(content); err != nil {
+			return err
+		}
+
+		if err := new.NewFile(f.Name()).Write(content); err != nil {
+			return nil
+		}
+	}
+
+	for _, dir := range original.Directories() {
+		if err := copyDirectory(dir, new.NewDirectory(dir.Name())); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // NewRootDirectory returns a new root directory

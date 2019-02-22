@@ -150,6 +150,12 @@ var _ = Describe("should handle files properly", func() {
 		Expect(buffer.String()).To(BeEquivalentTo("test"))
 	})
 
+	_ = It("should create an asRoot copy", func() {
+		root.NewDirectory(paths.Of("usr")).NewDirectory(paths.Of("homeport")).NewDirectory(paths.Of("home")).NewFile(paths.Of("test.go"))
+		rootCopy := root.Directory(paths.Of("usr/homeport")).AsRoot()
+		Expect(rootCopy.File(paths.Of("home/test.go"))).To(Not(BeNil()))
+	})
+
 	_ = It("should read from file correctly", func() {
 		e := LoadFromDisk(root, filepath.FromSlash("../../assets/tests"))
 		Expect(e).To(BeNil())
