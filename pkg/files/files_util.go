@@ -56,7 +56,7 @@ func LoadFromDisk(directory Directory, path string) (e error) {
 
 		for _, file := range directoryContent {
 			if file.IsDir() {
-				if err := LoadFromDisk(directory.NewDirectory(paths.Of(file.Name())), filepath.Join(path, file.Name())); err != nil {
+				if err := LoadFromDisk(directory.NewDirectory(paths.Of(file.Name())).WithPermission(file.Mode()), filepath.Join(path, file.Name())); err != nil {
 					return err
 				}
 			} else {
@@ -79,19 +79,24 @@ func readFileInto(directory Directory, path string) (e error) {
 		return readError
 	}
 
-	return directory.NewFile(paths.Of(path).Drop()).Write(bytes.NewBuffer(content))
+	info, statError := os.Stat(path)
+	if statError != nil {
+		return statError
+	}
+
+	return directory.NewFile(paths.Of(path).Drop()).WithPermission(info.Mode()).Write(bytes.NewBuffer(content))
 }
 
 // WriteToDisk writes a directory to the given path
 // Overwriting or skipping an existing file based on the bool
-func WriteToDisk(directory Directory, path string, overwrite bool, permission os.FileMode) (e error) {
+func WriteToDisk(directory Directory, path string, overwrite bool) (e error) {
 	info, statError := os.Stat(path)
 	if statError != nil {
 		if !os.IsNotExist(statError) {
 			return statError
 		}
 
-		if err := os.MkdirAll(path, permission); err != nil {
+		if err := os.MkdirAll(path, directory.PermissionSet()); err != nil {
 			return err
 		}
 	}
@@ -104,10 +109,10 @@ func WriteToDisk(directory Directory, path string, overwrite bool, permission os
 		path = filepath.Join(path, directory.Name().String())
 	}
 
-	return writeDirectoryToDisk(directory, path, overwrite, permission)
+	return writeDirectoryToDisk(directory, path, overwrite)
 }
 
-func writeFileToDisk(file File, directoryPath string, overwrite bool, permission os.FileMode) (e error) {
+func writeFileToDisk(file File, directoryPath string, overwrite bool) (e error) {
 	path := filepath.Join(directoryPath, file.Name().String())
 	var fileOnDisk *os.File
 
@@ -132,7 +137,7 @@ func writeFileToDisk(file File, directoryPath string, overwrite bool, permission
 		}
 	}
 
-	if fileOnDisk, e = os.OpenFile(path, os.O_RDWR|os.O_TRUNC, permission); e != nil {
+	if fileOnDisk, e = os.OpenFile(path, os.O_RDWR|os.O_TRUNC, file.PermissionSet()); e != nil {
 		// Check for errors after opening the file
 		return e
 	}
@@ -149,14 +154,14 @@ func writeFileToDisk(file File, directoryPath string, overwrite bool, permission
 	return nil
 }
 
-func writeDirectoryToDisk(directory Directory, directoryPath string, overwrite bool, permission os.FileMode) (e error) {
+func writeDirectoryToDisk(directory Directory, directoryPath string, overwrite bool) (e error) {
 	info, e := os.Stat(directoryPath)
 	if e != nil {
 		if !os.IsNotExist(e) {
 			return e
 		}
 
-		if e := os.MkdirAll(directoryPath, permission); e != nil {
+		if e := os.MkdirAll(directoryPath, directory.PermissionSet()); e != nil {
 			return e
 		}
 	}
@@ -166,13 +171,13 @@ func writeDirectoryToDisk(directory Directory, directoryPath string, overwrite b
 	}
 
 	for _, dir := range directory.Directories() {
-		if err := writeDirectoryToDisk(dir, filepath.Join(directoryPath, dir.Name().String()), overwrite, permission); err != nil {
+		if err := writeDirectoryToDisk(dir, filepath.Join(directoryPath, dir.Name().String()), overwrite); err != nil {
 			return err
 		}
 	}
 
 	for _, file := range directory.Files() {
-		if err := writeFileToDisk(file, directoryPath, overwrite, permission); err != nil {
+		if err := writeFileToDisk(file, directoryPath, overwrite); err != nil {
 			return err
 		}
 	}

@@ -46,7 +46,7 @@ func (t *Tar) Compress(directory files.Directory, writer *bytes.Buffer) (e error
 
 		tarHeader := &tar.Header{
 			Name:     filepath.ToSlash(file.AbsolutePath().String()),
-			Mode:     0700,
+			Mode:     int64(file.PermissionSet()),
 			Size:     int64(buffer.Len()),
 			Typeflag: tar.TypeReg,
 		}
@@ -87,7 +87,7 @@ func (t *Tar) Decompress(reader io.Reader) (directory files.Directory, e error) 
 			break
 		}
 
-		if err := root.NewFile(paths.Of(header.Name)).Write(tarReader); err != nil {
+		if err := root.NewFile(paths.Of(header.Name)).WithPermission(header.FileInfo().Mode()).Write(tarReader); err != nil {
 			foundError = err
 			break
 		}

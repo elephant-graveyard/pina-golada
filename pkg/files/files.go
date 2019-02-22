@@ -23,6 +23,7 @@ package files
 import (
 	"io"
 	"io/ioutil"
+	"os"
 
 	"github.com/homeport/pina-golada/pkg/files/paths"
 )
@@ -40,6 +41,9 @@ type File interface {
 	Name() (name paths.Path)
 	AbsolutePath() (path paths.Path)
 
+	WithPermission(set os.FileMode) File
+	PermissionSet() os.FileMode
+
 	CopyContent(writer io.Writer) (e error)
 	Write(reader io.Reader) (e error)
 	WriteFlagged(reader io.Reader, append bool) (e error)
@@ -50,9 +54,10 @@ type File interface {
 
 // memoryFile is an in memory implementation of the File interface
 type memoryFile struct {
-	name    paths.Path
-	parent  Directory
-	content []byte
+	name     paths.Path
+	parent   Directory
+	content  []byte
+	PermBits os.FileMode
 }
 
 // Name Returns the name of the file
@@ -99,4 +104,15 @@ func (m *memoryFile) Delete() {
 // Parent returns the parent of the file
 func (m *memoryFile) Parent() (parentDirectory Directory) {
 	return m.parent
+}
+
+// WithPermission stores the permission set on the directory
+func (m *memoryFile) WithPermission(set os.FileMode) File {
+	m.PermBits = set
+	return m
+}
+
+// PermissionSet returns the permission set of the directory
+func (m *memoryFile) PermissionSet() os.FileMode {
+	return m.PermBits
 }
