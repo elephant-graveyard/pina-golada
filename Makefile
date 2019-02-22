@@ -30,7 +30,6 @@ analysis:
 	@scripts/analysis.sh
 
 test:
-	@shellcheck scripts/*.sh
 	@scripts/test.sh
 
 build:
