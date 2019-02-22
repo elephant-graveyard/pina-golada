@@ -23,6 +23,7 @@ package files
 import (
 	"bytes"
 	"github.com/homeport/pina-golada/pkg/files/paths"
+	"os"
 )
 
 // Directory represents a virtual directory containing files.
@@ -52,6 +53,9 @@ type Directory interface {
 	Name() (name paths.Path)
 	AbsolutePath() (path paths.Path)
 
+	WithPermission(permission os.FileMode) Directory
+	PermissionSet() os.FileMode
+
 	Files() (files []File)
 	File(path paths.Path) (file File)
 	NewFile(path paths.Path) (newFile File)
@@ -68,10 +72,11 @@ type Directory interface {
 
 // memoryDirectory is a in memory implementation of the directory interface
 type memoryDirectory struct {
-	name   paths.Path
-	parent Directory
-	files  []File
-	dirs   []Directory
+	name     paths.Path
+	parent   Directory
+	files    []File
+	dirs     []Directory
+	PermBits os.FileMode
 }
 
 // Name returns the name of the directory
@@ -85,6 +90,17 @@ func (m *memoryDirectory) AbsolutePath() (path paths.Path) {
 		return m.Parent().AbsolutePath().Concat(m.Name())
 	}
 	return m.Name()
+}
+
+// WithPermission stores the permission set on the directory
+func (m *memoryDirectory) WithPermission(permission os.FileMode) Directory {
+	m.PermBits = permission
+	return m
+}
+
+// PermissionSet returns the permission set of the directory
+func (m *memoryDirectory) PermissionSet() os.FileMode {
+	return m.PermBits
 }
 
 // Files returns a slice of all files found in the directory
@@ -136,6 +152,7 @@ func (m *memoryDirectory) NewFile(path paths.Path) (newFile File) {
 		parent: m,
 		name:   newPath,
 	}
+	file.WithPermission(m.PermissionSet())
 	m.files = append(m.files, file)
 	return file
 }
@@ -223,6 +240,8 @@ func (m *memoryDirectory) NewDirectory(path paths.Path) (newDirectory Directory)
 		name:   path,
 		parent: m,
 	}
+	createdDirectory.WithPermission(m.PermissionSet())
+
 	m.dirs = append(m.dirs, createdDirectory)
 	return createdDirectory
 }
