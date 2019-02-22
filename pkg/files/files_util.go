@@ -122,7 +122,11 @@ func writeFileToDisk(file File, directoryPath string, overwrite bool) (e error) 
 			return e
 		}
 
-		if fileOnDisk, e = os.Create(path); e != nil { // Creating the path given that it doesn't exist
+		if fileOnDisk, e = os.Create(path); e == nil { // Creating the path given that it doesn't exist
+			if err := fileOnDisk.Close(); err != nil {
+				return err
+			}
+		} else {
 			return e
 		}
 	}
