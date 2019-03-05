@@ -36,7 +36,7 @@ var versionCommand = &cobra.Command{
 			version = "development"
 		}
 
-		_, _ = bunt.Print("pina-golada currently runs on ", version)
+		_, _ = bunt.Printf("pina-golada currently runs on %s\n", version)
 	},
 }
 
