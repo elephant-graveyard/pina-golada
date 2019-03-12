@@ -151,7 +151,6 @@ func (m *memoryDirectory) NewFile(path paths.Path) (newFile File) {
 	file := &memoryFile{
 		parent:   m,
 		name:     newPath,
-		PermBits: os.FileMode(0755),
 	}
 	file.WithPermission(m.PermissionSet())
 	m.files = append(m.files, file)
@@ -240,7 +239,6 @@ func (m *memoryDirectory) NewDirectory(path paths.Path) (newDirectory Directory)
 	createdDirectory := &memoryDirectory{
 		name:   path,
 		parent: m,
-		PermBits: os.FileMode(0755),
 	}
 	createdDirectory.WithPermission(m.PermissionSet())
 
@@ -311,6 +309,5 @@ func copyDirectory(original Directory, new Directory) error {
 func NewRootDirectory() Directory {
 	return &memoryDirectory{
 		name:     paths.RootPath(),
-		PermBits: os.FileMode(0755),
 	}
 }
