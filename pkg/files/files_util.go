@@ -49,6 +49,8 @@ func LoadFromDisk(directory Directory, path string) (e error) {
 	}
 
 	if info.IsDir() {
+		directory.WithPermission(info.Mode())
+
 		directoryContent, e := ioutil.ReadDir(path)
 		if e != nil {
 			return e
