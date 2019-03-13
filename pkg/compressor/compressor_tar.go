@@ -23,6 +23,7 @@ package compressor
 import (
 	"archive/tar"
 	"bytes"
+	"compress/flate"
 	"compress/gzip"
 	"io"
 	"path/filepath"
@@ -35,9 +36,14 @@ import (
 type Tar struct{}
 
 // Compress compresses the directory into the writer
-func (t *Tar) Compress(directory files.Directory, writer *bytes.Buffer) (e error) {
-	gzipWriter := gzip.NewWriter(writer)
+func (t *Tar) Compress(directory files.Directory, writer *bytes.Buffer) error {
+	gzipWriter, err := gzip.NewWriterLevel(writer, flate.BestCompression)
+	if err != nil {
+		return err
+	}
+
 	tarWriter := tar.NewWriter(gzipWriter)
+
 	files.WalkFileTree(directory, func(file files.File) {
 		buffer := &bytes.Buffer{}
 		if err := file.CopyContent(buffer); err != nil {
@@ -62,6 +68,7 @@ func (t *Tar) Compress(directory files.Directory, writer *bytes.Buffer) (e error
 	if err := gzipWriter.Close(); err != nil {
 		return err
 	}
+
 	return tarWriter.Close()
 }
 
