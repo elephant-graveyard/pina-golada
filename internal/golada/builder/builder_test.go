@@ -67,4 +67,24 @@ var _ = Describe("should generate files correctly", func() {
 		Expect(b).To(Not(BeNil()))
 		fmt.Println(string(b)) // Printing it to the test console to manually debug builder errors
 	})
+
+	_ = It("should not write starting and closing parenthesis for a function with no return type", func() {
+		stream, e := inspector.NewFileStream("./")
+		Expect(e).To(BeNil())
+
+		astStream := inspector.NewAstStream(stream.Filter(func(file inspector.File) bool {
+			return strings.Contains(file.FileInfo.Name(), "builder_test.go")
+		}))
+		interfaces := astStream.Find()
+		Expect(len(interfaces)).To(BeEquivalentTo(1))
+
+		builder := NewBuilder(interfaces[0], &PinaGoladaInterface{
+			Injector: "AssetInjector",
+		}, annotation.NewPropertyParser())
+		b, e := builder.BuildFile()
+
+		Expect(e).To(BeNil())
+		Expect(b).To(Not(BeNil()))
+		Expect(strings.Count(string(b), "func init() ()")).To(BeEquivalentTo(0))
+	})
 })

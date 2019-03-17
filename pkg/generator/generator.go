@@ -204,14 +204,27 @@ func (m *SimpleMethodGenerator) Body(body ...string) MethodGenerator {
 // Flush flushes the content of the generator to a writer instance
 func (m *SimpleMethodGenerator) Flush(writer io.Writer) {
 	builder := &strings.Builder{}
+
+	// function definition with optional receiver
 	builder.WriteString("func ")
 	if len(m.receiver) > 0 {
 		builder.WriteString("(" + m.receiver + ") ")
 	}
-	builder.WriteString(m.name + "(" + strings.Join(m.parameters, ", ") + ") (" + strings.Join(m.returnTypes, ", ") + ") {" + EndOfLine)
+
+	// function name and function parameters
+	builder.WriteString(m.name + "(" + strings.Join(m.parameters, ", ") + ")")
+
+	// function return types (if any)
+	if len(m.returnTypes) > 0 {
+		builder.WriteString(" (" + strings.Join(m.returnTypes, ", ") + ")")
+	}
+
+	// function body
+	builder.WriteString(" {" + EndOfLine)
 	for _, body := range m.body {
 		builder.WriteString(Intend + body + EndOfLine)
 	}
 	builder.WriteString("}" + EndOfLine)
-	_, _ = writer.Write([]byte(builder.String()))
+
+	writer.Write([]byte(builder.String()))
 }
