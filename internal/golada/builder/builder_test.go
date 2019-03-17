@@ -21,7 +21,6 @@
 package builder
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -71,7 +70,9 @@ var _ = Describe("should generate files correctly", func() {
 
 		Expect(e).To(BeNil())
 		Expect(b).To(Not(BeNil()))
-		fmt.Println(string(b)) // Printing it to the test console to manually debug builder errors
+
+		// Uncomment the following line to print the generated source for for manual inspection:
+		// fmt.Println(string(b))
 	})
 
 	_ = It("should not create duplicate import entries", func() {
