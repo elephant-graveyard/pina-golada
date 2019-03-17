@@ -25,6 +25,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"go/format"
 	"path/filepath"
 	"strings"
 
@@ -152,5 +153,6 @@ func (b Builder) BuildFile() (by []byte, err error) {
 	outputBuffer := &bytes.Buffer{}
 	outputBuffer.WriteString(IdentifierString + "\n")
 	goGenerator.Flush(outputBuffer)
-	return outputBuffer.Bytes(), nil
+
+	return format.Source(outputBuffer.Bytes())
 }
