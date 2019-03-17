@@ -104,7 +104,20 @@ func (f *FileGoGenerator) Flush(writer io.Writer) {
 
 // Import adds a new import to the generator
 func (f *FileGoGenerator) Import(importName string) GoGenerator {
-	f.imports = append(f.imports, importName)
+	contains := func(list []string, value string) bool {
+		for _, entry := range list {
+			if entry == value {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	if !contains(f.imports, importName) {
+		f.imports = append(f.imports, importName)
+	}
+
 	return f
 }
 

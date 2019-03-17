@@ -45,6 +45,12 @@ var AssetInjector AssetProvider
 type AssetProvider interface {
 	// @pgl(asset=../../../assets/tests/fileTestFolder/test.txt&compressor=tar&type=file)
 	GetMainGoFile() (d files.Directory, err error)
+
+	// @pgl(asset=../../../assets/tests/issue-27/directory-1&compressor=tar)
+	GetInfoFileNo1() (d files.Directory, err error)
+
+	// @pgl(asset=../../../assets/tests/issue-27/directory-2&compressor=tar)
+	GetInfoFileNo2() (d files.Directory, err error)
 }
 
 var _ = Describe("should generate files correctly", func() {
@@ -66,6 +72,31 @@ var _ = Describe("should generate files correctly", func() {
 		Expect(e).To(BeNil())
 		Expect(b).To(Not(BeNil()))
 		fmt.Println(string(b)) // Printing it to the test console to manually debug builder errors
+	})
+
+	_ = It("should not create duplicate import entries", func() {
+		stream, e := inspector.NewFileStream("./")
+		Expect(e).To(BeNil())
+
+		astStream := inspector.NewAstStream(stream.Filter(func(file inspector.File) bool {
+			return strings.Contains(file.FileInfo.Name(), "builder_test.go")
+		}))
+		interfaces := astStream.Find()
+		Expect(len(interfaces)).To(BeEquivalentTo(1))
+
+		builder := NewBuilder(
+			interfaces[0],
+			&PinaGoladaInterface{
+				Injector: "AssetInjector",
+			},
+			annotation.NewPropertyParser(),
+		)
+
+		b, err := builder.BuildFile()
+		Expect(err).ToNot(HaveOccurred())
+		Expect(b).ToNot(BeNil())
+
+		Expect(strings.Count(string(b), "github.com/homeport/pina-golada/pkg/files/paths")).To(BeEquivalentTo(1))
 	})
 
 	_ = It("should not write starting and closing parenthesis for a function with no return type", func() {
