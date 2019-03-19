@@ -25,11 +25,11 @@ import (
 	"bytes"
 	"compress/flate"
 	"compress/gzip"
+	"github.com/homeport/pina-golada/pkg/files/paths"
 	"io"
 	"path/filepath"
 
 	"github.com/homeport/pina-golada/pkg/files"
-	"github.com/homeport/pina-golada/pkg/files/paths"
 )
 
 // Tar is an implementation of the compressor interface which compresses to .tar.gz files
@@ -65,6 +65,18 @@ func (t *Tar) Compress(directory files.Directory, writer *bytes.Buffer) error {
 		}
 	})
 
+	files.WalkDirectoryTree(directory, func(d files.Directory) {
+		tarHeader := &tar.Header{
+			Name:     filepath.ToSlash(d.AbsolutePath().String()),
+			Mode:     int64(d.PermissionSet()),
+			Typeflag: tar.TypeDir,
+		}
+
+		if err := tarWriter.WriteHeader(tarHeader); err != nil {
+			return
+		}
+	})
+
 	if err := gzipWriter.Close(); err != nil {
 		return err
 	}
@@ -94,9 +106,13 @@ func (t *Tar) Decompress(reader io.Reader) (directory files.Directory, e error) 
 			break
 		}
 
-		if err := root.NewFile(paths.Of(header.Name)).WithPermission(header.FileInfo().Mode()).Write(tarReader); err != nil {
-			foundError = err
-			break
+		if header.Typeflag == tar.TypeDir {
+			root.Directory(paths.Of(header.Name)).WithPermission(header.FileInfo().Mode())
+		} else {
+			if err := root.NewFile(paths.Of(header.Name)).WithPermission(header.FileInfo().Mode()).Write(tarReader); err != nil {
+				foundError = err
+				break
+			}
 		}
 	}
 

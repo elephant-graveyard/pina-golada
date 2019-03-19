@@ -41,6 +41,14 @@ func WalkFileTree(directory Directory, consumer func(file File)) {
 	}
 }
 
+// WalkDirectoryTree walks over each sub directory found in the directory, excluding the passed directory
+func WalkDirectoryTree(directory Directory, consumer func(d Directory)) {
+	for _, dir := range directory.Directories() {
+		consumer(dir)
+		WalkDirectoryTree(dir, consumer)
+	}
+}
+
 // LoadFromDisk Loads the content of the paths into the directory recursively
 func LoadFromDisk(directory Directory, path string) (e error) {
 	info, statError := os.Stat(path)

@@ -75,4 +75,39 @@ var _ = Describe("should compress files correctly", func() {
 		Expect(testB.CopyContent(buffer)).To(BeNil())
 		Expect(buffer.String()).To(BeEquivalentTo("testB"))
 	})
+
+	_ = It("should preserve all file permissions when compressing and decompressing", func() {
+		err := files.LoadFromDisk(directory, "../../assets/tests/issue-35")
+		Expect(err).ToNot(HaveOccurred())
+
+		tarCompressor := &Tar{}
+
+		err = tarCompressor.Compress(directory, buffer)
+		Expect(err).ToNot(HaveOccurred())
+
+		result, err := tarCompressor.Decompress(buffer)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(result).ToNot(BeNil())
+
+		fileByPath := func(ref files.Directory, path string) files.File {
+			file := ref.File(paths.Of(path))
+			Expect(file).ToNot(BeNil())
+			return file
+		}
+
+		dirByPath := func(ref files.Directory, path string) files.Directory {
+			dir := ref.Directory(paths.Of(path))
+			Expect(dir).ToNot(BeNil())
+			return dir
+		}
+
+		Expect(fileByPath(result, "root.txt").PermissionSet()).
+			To(BeEquivalentTo(fileByPath(directory, "root.txt").PermissionSet()))
+
+		Expect(fileByPath(result, "subdirectory-1/nested-directory-1/example.txt").PermissionSet()).
+			To(BeEquivalentTo(fileByPath(directory, "subdirectory-1/nested-directory-1/example.txt").PermissionSet()))
+
+		Expect(dirByPath(result, "subdirectory-1").PermissionSet()).
+			To(BeEquivalentTo(dirByPath(directory, "subdirectory-1").PermissionSet()))
+	})
 })
