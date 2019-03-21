@@ -21,14 +21,14 @@
 package cmd
 
 import (
+	"github.com/homeport/pina-golada/internal/golada/logger"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"strings"
-
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
 
 	"github.com/homeport/pina-golada/internal/golada/builder"
 	"github.com/homeport/pina-golada/pkg/annotation"
@@ -57,20 +57,35 @@ var generateCommand = &cobra.Command{
 	If it finds an interface requesting and defining an asset provider, it will generate one`,
 	Run: func(c *cobra.Command, args []string) {
 		path := "."
+		var (
+			parser annotation.Parser
+			l      logger.Logger
+		)
 
 		switch strings.ToLower(parserType) {
 		case "csv":
-			Generate(path, annotation.NewCsvParser())
+			parser = annotation.NewCsvParser()
 		case "property":
-			Generate(path, annotation.NewPropertyParser())
+			parser = annotation.NewPropertyParser()
 		default:
 			log.Fatal("could not find parser for parser type " + parserType)
 		}
+
+		if verbose {
+			l = logger.NewDefaultLogger(os.Stdout, logger.Debug)
+		} else {
+			l = logger.NewDefaultLogger(os.Stdout, logger.Info)
+		}
+
+		Generate(path, parser, l)
 	},
 }
 
 // Generate generates the pgl implementations for the given path
-func Generate(path string, parser annotation.Parser) {
+func Generate(path string, parser annotation.Parser, logger logger.Logger) {
+	logger.Debug("Gray{Debug➤ Generator is now using} LimeGreen{%s} Gray{parser}",
+		reflect.TypeOf(parser).Elem().Name())
+
 	fileStream, e := inspector.NewFileStream(path)
 	if e != nil {
 		log.Fatalf("could not create file stream of directory %s due to %s", path, e.Error())
@@ -88,7 +103,11 @@ func Generate(path string, parser annotation.Parser) {
 			panic(e)
 		}
 
-		output, e := builder.NewBuilder(i, interfaceAnnotation, parser).BuildFile()
+		logger.Info("Aqua{%s}➤ Generating asset provider for LimeGreen{%s}\n", "Pina-Golada",
+			i.File.OSFile.FileInfo.Name()+"#"+i.Name.Name)
+		logger.Debug("Gray{Debug➤ Found} LimeGreen{%s} Gray{interface}", i.Name.Name)
+
+		output, e := builder.NewBuilder(i, interfaceAnnotation, parser, logger).BuildFile()
 		if e != nil {
 			log.Fatalf("Could not build file due to " + e.Error())
 		}
@@ -97,13 +116,11 @@ func Generate(path string, parser annotation.Parser) {
 		if err := ioutil.WriteFile(implementationFileName, output, os.ModePerm); err != nil {
 			log.Fatal("could not create output file due to " + err.Error())
 		}
-
-		_, _ = bunt.Printf("Aqua{%s}➤ Generated asset provider for LimeGreen{%s}\n", "Pina-Golada",
-			i.File.OSFile.FileInfo.Name()+"#"+i.Name.Name)
 	}
 }
 
 func init() {
 	generateCommand.PersistentFlags().StringVar(&parserType, "parser", "property", "parser [csv,property]")
+	generateCommand.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "--verbose|-v")
 	rootCmd.AddCommand(generateCommand)
 }

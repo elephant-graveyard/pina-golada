@@ -21,6 +21,7 @@
 package builder
 
 import (
+	"github.com/homeport/pina-golada/internal/golada/logger"
 	"strings"
 	"testing"
 
@@ -53,6 +54,15 @@ type AssetProvider interface {
 }
 
 var _ = Describe("should generate files correctly", func() {
+
+	var (
+		l logger.Logger
+	)
+
+	_ = BeforeEach(func() {
+		l = logger.NewDefaultLogger(&DevNullWriter{}, logger.Debug)
+	})
+
 	_ = It("should create a compilable file", func() {
 		stream, e := inspector.NewFileStream("./")
 		Expect(e).To(BeNil())
@@ -65,7 +75,7 @@ var _ = Describe("should generate files correctly", func() {
 
 		builder := NewBuilder(interfaces[0], &PinaGoladaInterface{
 			Injector: "AssetInjector",
-		}, annotation.NewPropertyParser())
+		}, annotation.NewPropertyParser(), l)
 		b, e := builder.BuildFile()
 
 		Expect(e).To(BeNil())
@@ -91,6 +101,7 @@ var _ = Describe("should generate files correctly", func() {
 				Injector: "AssetInjector",
 			},
 			annotation.NewPropertyParser(),
+			l,
 		)
 
 		b, err := builder.BuildFile()
@@ -112,7 +123,7 @@ var _ = Describe("should generate files correctly", func() {
 
 		builder := NewBuilder(interfaces[0], &PinaGoladaInterface{
 			Injector: "AssetInjector",
-		}, annotation.NewPropertyParser())
+		}, annotation.NewPropertyParser(), l)
 		b, e := builder.BuildFile()
 
 		Expect(e).To(BeNil())
