@@ -25,6 +25,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/homeport/pina-golada/internal/golada/logger"
 	"go/format"
 	"path/filepath"
 	"strings"
@@ -75,11 +76,15 @@ type Builder struct {
 	target              *inspector.AstInterface
 	interfaceAnnotation *PinaGoladaInterface
 	parser              annotation.Parser
+	logger              logger.Logger
 }
 
 // NewBuilder Creates a new builder instance
-func NewBuilder(target *inspector.AstInterface, interfaceAnnotation *PinaGoladaInterface, parser annotation.Parser) *Builder {
-	return &Builder{target: target, interfaceAnnotation: interfaceAnnotation, parser: parser}
+func NewBuilder(target *inspector.AstInterface,
+	interfaceAnnotation *PinaGoladaInterface,
+	parser annotation.Parser,
+	l logger.Logger) *Builder {
+	return &Builder{target: target, interfaceAnnotation: interfaceAnnotation, parser: parser, logger: l}
 }
 
 // BuildFile Builds the file
@@ -144,6 +149,10 @@ func (b Builder) BuildFile() (by []byte, err error) {
 			return nil, e
 		}
 
+		files.WalkFileTree(directory, func(file files.File) {
+			b.logger.Debug("Gray{Debug➤ Found asset file} White{%s}", file.Name().String())
+		})
+
 		compressorType := compressor.DefaultRegistry.Find(methodAnnotation.Compressor)
 		if compressorType == nil {
 			return nil, errors.New("could not find compressor for " + methodAnnotation.Compressor)
@@ -152,6 +161,10 @@ func (b Builder) BuildFile() (by []byte, err error) {
 		if err := compressorType.Compress(directory, buffer); err != nil {
 			return nil, err
 		}
+
+		b.logger.Debug("Gray{Debug➤ Compressed asset} LimeGreen{%s} Gray{for method} LimeGreen{%s} "+
+			"Gray{to} LimeGreen{%d} Gray{bytes}",
+			methodAnnotation.Asset, b.target.Name.Name+"#"+methodName, buffer.Len())
 
 		goGenerator.Method(methodName, func(method generator.MethodGenerator) {
 			assetProviderCall := fmt.Sprintf("%s.%s(\"%s\", \"%s\")", receiverVariableName,
@@ -176,6 +189,7 @@ func (b Builder) BuildFile() (by []byte, err error) {
 	goGenerator.Method("init", func(method generator.MethodGenerator) {
 		method.Body(b.interfaceAnnotation.Injector + " = &" + structName + "{}")
 	})
+	b.logger.Debug("Gray{Debug➤ Generated initialize method for} LimeGreen{%s}", b.target.Name.Name)
 
 	outputBuffer := &bytes.Buffer{}
 	outputBuffer.WriteString(IdentifierString + "\n\n")

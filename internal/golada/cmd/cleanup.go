@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"bufio"
+	"github.com/homeport/pina-golada/internal/golada/logger"
 	"log"
 	"os"
 	"path/filepath"
@@ -37,6 +38,13 @@ var cleanupCommand = &cobra.Command{
 	Short: "Cleans all the generated files",
 	Long:  "Cleanup will iterate over every go file in the project and delete it if it does start with PinaGolada's identifier string",
 	Run: func(c *cobra.Command, args []string) {
+		var l logger.Logger
+		if verbose {
+			l = logger.NewDefaultLogger(os.Stdout, logger.Debug)
+		} else {
+			l = logger.NewDefaultLogger(os.Stdout, logger.Info)
+		}
+
 		e := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 			if GoFileSelector.Match([]byte(info.Name())) {
 				file, err := os.Open(path)
@@ -58,6 +66,7 @@ var cleanupCommand = &cobra.Command{
 					if err := os.Remove(path); err != nil {
 						return err
 					}
+					l.Debug("Gray{Debug➤ Removed pina-golada file} LimeGreen{%s}", file.Name())
 				}
 			}
 			return nil
@@ -65,9 +74,11 @@ var cleanupCommand = &cobra.Command{
 		if e != nil {
 			log.Fatalf("could not iterrate over the files in this directory %s", e.Error())
 		}
+		l.Info("Aqua{%s}➤ Cleaned project from pina-golada file", "Pina-Golada")
 	},
 }
 
 func init() {
+	cleanupCommand.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "--verbose|-v")
 	rootCmd.AddCommand(cleanupCommand)
 }
