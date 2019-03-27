@@ -1,5 +1,7 @@
 # Pina-Golada /pi:nɑ:-goʊlɑ:dɑ:/
 
+<img src="/docs/logo.png" align="right" width="120" height="178" title="Pina-Golada logo by Michael Schepanske"/>
+
 [![License](https://img.shields.io/github/license/homeport/pina-golada.svg)](https://github.com/homeport/pina-golada/blob/master/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/homeport/pina-golada)](https://goreportcard.com/report/github.com/homeport/pina-golada)
 [![Build Status](https://travis-ci.org/homeport/pina-golada.svg?branch=develop)](https://travis-ci.org/homeport/pina-golada)
