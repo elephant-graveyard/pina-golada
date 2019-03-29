@@ -132,7 +132,7 @@ func writeFileToDisk(file File, directoryPath string, overwrite bool) (e error) 
 			return e
 		}
 
-		if fileOnDisk, e = os.Create(path); e == nil { // Creating the path given that it doesn't exist
+		if fileOnDisk, e = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, file.PermissionSet()); e == nil { // Creating the path given that it doesn't exist
 			if err := fileOnDisk.Close(); err != nil {
 				return err
 			}
@@ -148,6 +148,12 @@ func writeFileToDisk(file File, directoryPath string, overwrite bool) (e error) 
 
 		if !overwrite { // Checking if the file should be overwritten given it exists
 			return nil
+		}
+
+		if info.Mode() != file.PermissionSet() { // Update file permission if needed
+			if err := os.Chmod(path, file.PermissionSet()); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -182,6 +188,12 @@ func writeDirectoryToDisk(directory Directory, directoryPath string, overwrite b
 
 	if info != nil && !info.IsDir() {
 		return fmt.Errorf("provided path pointed to file %s", directoryPath)
+	}
+
+	if overwrite && info.Mode() != directory.PermissionSet() { // Overwrite permissions if overwrite is enabled
+		if err := os.Chmod(directoryPath, directory.PermissionSet()); err != nil {
+			return err
+		}
 	}
 
 	for _, dir := range directory.Directories() {
