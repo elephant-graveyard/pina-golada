@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package builder hosts the builder interfaces and implementation which are responsible of creating
+// the go source classes that implement the pina-golada interfaces.
 package builder
 
 import (

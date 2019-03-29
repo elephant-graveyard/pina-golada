@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Package logger hosts the small logger wrapper internally used by pina-golada
+// to encapsulate the verbose logic to one instance.
 package logger
 
 import (
@@ -68,7 +70,7 @@ func NewDefaultLogger(outputStream io.Writer, highestLogLevel LogLevel) *Default
 func (d *DefaultLogger) Log(level LogLevel, message string, a ...interface{}) {
 	if d.highestLogLevel >= level {
 		message := bunt.Sprintf(message, a...)
-		if !strings.HasSuffix(message , "\n") {
+		if !strings.HasSuffix(message, "\n") {
 			message += "\n"
 		}
 

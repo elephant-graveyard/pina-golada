@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package cmd hosts the different cobra commands pina-golada offers.
+// This package is home to the generate, version and cleanup command.
 package cmd
 
 import (
