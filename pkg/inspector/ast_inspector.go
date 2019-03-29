@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package inspector hosts the interfaces which analyses existing go source files
+// and fetches interface commands and variable setup.
 package inspector
 
 import (

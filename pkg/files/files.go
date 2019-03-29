@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package files hosts the interfaces that pina-golada uses to represent a
+// virtual file system to de-couple the application from the host file system after an initial read.
 package files
 
 import (

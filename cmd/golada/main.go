@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package main hosts the starting point of the pain-golada application and
+// overall simply initializes the cobra framework.
 package main
 
 import (
