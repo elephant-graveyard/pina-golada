@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package compressor hosts the compressor logic used by pina-golada to compress the assets
+// into binary form. In here, the default compressors pina-golada ships with are implemented.
 package compressor
 
 import (

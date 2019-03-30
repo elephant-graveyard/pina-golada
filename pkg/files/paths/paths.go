@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package paths hosts the interface used by pina-golada to parse and concat relative and absolute
+// file paths. It wraps around the raw path string to provide easy management of complex paths.
 package paths
 
 import (

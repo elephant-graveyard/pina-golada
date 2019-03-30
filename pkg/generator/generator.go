@@ -18,6 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package generator hosts the generator interfaces, which are the base
+// for building go source files from runtime.
+// The represent go source elements like methods and structs during the runtime.
 package generator
 
 import (

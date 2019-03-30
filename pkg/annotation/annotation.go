@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package annotation hosts the general annotation framework used by pina-golada.
+// In here, both the annotation interface as well as the default parser implementation are defined.
 package annotation
 
 import (
