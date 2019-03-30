@@ -144,7 +144,8 @@ func (b Builder) BuildFile() (by []byte, err error) {
 			methodAnnotation.Asset = filepath.Join(".", methodAnnotation.Asset)
 		}
 
-		isDir, directory, e := loadFromDisk(files.NewRootDirectory(), methodAnnotation.Asset)
+		directory := files.NewRootDirectory()
+		isDir, e := files.LoadFromDiskAndType(directory, methodAnnotation.Asset)
 		if e != nil {
 			return nil, e
 		}
