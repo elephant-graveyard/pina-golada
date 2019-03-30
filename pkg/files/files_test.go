@@ -175,7 +175,7 @@ var _ = Describe("should handle files properly", func() {
 		pathToTestDir := "../../assets/tests/issue-51/file"
 		pathToTestFile := filepath.Join(pathToTestDir, "permission.txt")
 
-		os.Chmod(pathToTestFile, 0777)
+		Expect(os.Chmod(pathToTestFile, 0777)).To(Not(HaveOccurred()))
 		Expect(GetFilePermission(pathToTestFile)).To(BeEquivalentTo(0777))
 
 		Expect(LoadFromDisk(root, pathToTestDir)).To(BeNil())
@@ -187,12 +187,12 @@ var _ = Describe("should handle files properly", func() {
 		Expect(GetFilePermission(pathToTestFile)).To(BeEquivalentTo(os.FileMode(0701)))
 	})
 
-	_ = It("should overwrite permission sets on folders", func() {
-		pathToTestDir := "../../assets/tests/issue-51/folder"
-		pathToTestFile := filepath.Join(pathToTestDir, "permission")
+	_ = It("should overwrite permission sets on directories", func() {
+		pathToTestDir := "../../assets/tests/issue-51/directory"
+		pathToTestTarget := filepath.Join(pathToTestDir, "permission")
 
-		Expect(os.Chmod(pathToTestFile, 0777)).To(Not(HaveOccurred()))
-		Expect(GetFilePermission(pathToTestFile).Perm()).To(BeEquivalentTo(0777))
+		Expect(os.Chmod(pathToTestTarget, 0777)).To(Not(HaveOccurred()))
+		Expect(GetFilePermission(pathToTestTarget).Perm()).To(BeEquivalentTo(0777))
 
 		Expect(LoadFromDisk(root, pathToTestDir)).To(BeNil())
 		directory := root.Directory(paths.Of("permission"))
@@ -200,7 +200,7 @@ var _ = Describe("should handle files properly", func() {
 
 		directory.WithPermission(0701)
 		Expect(WriteToDisk(root, pathToTestDir, true)).To(BeNil())
-		Expect(GetFilePermission(pathToTestFile).Perm()).To(BeEquivalentTo(0701))
+		Expect(GetFilePermission(pathToTestTarget).Perm()).To(BeEquivalentTo(0701))
 	})
 })
 
