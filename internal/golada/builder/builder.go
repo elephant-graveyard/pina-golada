@@ -58,7 +58,7 @@ type PinaGoladaInterface struct {
 
 // GetIdentifier returns the identifier of the interface
 func (PinaGoladaInterface) GetIdentifier() string {
-	return "@pgl"
+	return "pgl"
 }
 
 // PinaGoladaMethod is the struct used for the pina golada interface annotation
@@ -70,7 +70,7 @@ type PinaGoladaMethod struct {
 
 // GetIdentifier returns the identifier of the interface
 func (PinaGoladaMethod) GetIdentifier() string {
-	return "@pgl"
+	return "pgl"
 }
 
 // Builder is able to build a file

@@ -31,7 +31,7 @@ var (
 	ErrTooManyAnnotations = errors.New("the annotation type was declared multiple times in the comment")
 
 	// ErrNoAnnotation is the error that is thrown when no annotations were found in the comment
-	ErrNoAnnotation = errors.New("the requested annotation type was not find in the comment")
+	ErrNoAnnotation = errors.New("the requested annotation type was not found in the comment")
 )
 
 // Parser is an interface that is capable of parsing an annotation based on a string.
