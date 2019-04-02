@@ -21,7 +21,6 @@
 package annotation
 
 import (
-	"log"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
@@ -41,7 +40,7 @@ type TestAnnotation struct {
 
 // Returns the test annotation identifier
 func (TestAnnotation) GetIdentifier() string {
-	return "@test"
+	return "test"
 }
 
 var _ = Describe("should parse annotations correctly", func() {
@@ -58,8 +57,8 @@ var _ = Describe("should parse annotations correctly", func() {
 
 	_ = It("should parse a normal annotation", func() {
 		if err := parser.Parse("@test(name,test;version,1)", annotation); err != nil {
-			log.Fatal(err)
 			Fail("failed due to " + err.Error())
+			return
 		}
 
 		Expect(annotation.SuperCoolName).To(BeEquivalentTo("test"))
@@ -71,12 +70,27 @@ var _ = Describe("should parse annotations correctly", func() {
 is a doc
 @test(name,test;version,2)
 More documentation`, annotation); err != nil {
-			log.Fatal(err)
 			Fail("failed due to " + err.Error())
+			return
 		}
 
 		Expect(annotation.SuperCoolName).To(BeEquivalentTo("test"))
 		Expect(annotation.Version).To(BeEquivalentTo(2))
+	})
+
+	_ = It("should load the annotation from a label comment", func() {
+		parser = NewLabelParser()
+		content := `Well this is the first line of the doc
+This is the second ?
+  +test name,test version,3
+This is just kinda the third line`
+		if err := parser.Parse(content, annotation); err != nil {
+			Fail("failed due to " + err.Error())
+			return
+		}
+
+		Expect(annotation.SuperCoolName).To(BeEquivalentTo("test"))
+		Expect(annotation.Version).To(BeEquivalentTo(3))
 	})
 
 	_ = It("should not find an annotation", func() {

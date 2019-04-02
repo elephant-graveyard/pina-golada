@@ -39,7 +39,7 @@ func NewCsvParser() *CsvParser {
 
 // Parse parses an annotation following the format of the CsvParser
 func (c *CsvParser) Parse(comment string, annotation Annotation) (e error) {
-	r := regexp.MustCompile(`.*` + annotation.GetIdentifier() + `\((.*)\).*`)
+	r := regexp.MustCompile(`.*@` + annotation.GetIdentifier() + `\((.*)\).*`)
 	result := r.FindAllStringSubmatch(comment, -1)
 	if len(result) < 1 {
 		return ErrNoAnnotation

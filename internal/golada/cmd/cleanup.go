@@ -79,6 +79,6 @@ var cleanupCommand = &cobra.Command{
 }
 
 func init() {
-	cleanupCommand.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "--verbose|-v")
+	cleanupCommand.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "--verbose|-v. Adding this flag to the command will print debug messages for further inside.")
 	rootCmd.AddCommand(cleanupCommand)
 }

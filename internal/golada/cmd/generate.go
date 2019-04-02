@@ -67,6 +67,8 @@ var generateCommand = &cobra.Command{
 			parser = annotation.NewCsvParser()
 		case "property":
 			parser = annotation.NewPropertyParser()
+		case "build-tag":
+			parser = annotation.NewLabelParser()
 		default:
 			log.Fatal("could not find parser for parser type " + parserType)
 		}
@@ -120,7 +122,9 @@ func Generate(path string, parser annotation.Parser, logger logger.Logger) {
 }
 
 func init() {
-	generateCommand.PersistentFlags().StringVar(&parserType, "parser", "property", "parser [csv,property]")
-	generateCommand.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "--verbose|-v")
+	generateCommand.PersistentFlags().StringVarP(&parserType, "parser", "p", "property", "parser=[csv,property,build-tag]. "+
+		"This defines which annotation parser pina-golada will when generating the asset providers. "+
+		"Check the project README for annotation examples")
+	generateCommand.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "--verbose|-v. Adding this flag to the command will print debug messages for further inside.")
 	rootCmd.AddCommand(generateCommand)
 }
