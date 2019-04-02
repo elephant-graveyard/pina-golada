@@ -45,7 +45,7 @@ In case your Go project needs assets packaged into your program, you can use `pi
 package assets
 
 import (
-  "github.com/homeport/pina-golada/pkg/files"
+ "github.com/homeport/pina-golada/pkg/files"
 )
 
 // Provider is the provider instance to access the assets framework
@@ -62,6 +62,15 @@ type ProviderInterface interface {
 ```
 
 Prior to the build, run `pina-golada generate` to create a generated Go source file, which contains your assets. To clean up any generated file, use `pina-golada cleanup`. If you fancy more details, enable the verbose mode using `--verbose`. This works for `generate` as well as `cleanup`.
+In addition to the verbose parameter, you can specify the annotation `parser` you want to use by providing the parser tag value.
+Here are the currently supported `parser` values:
+
+- `property`
+    - Example: `@pgl(asset=/my/path&compressor=tar)`
+- `csv`
+    - Example: `@pgl(asset,/my/path;compressor,tar)`
+- `build-tag`
+    - Example: `+pgl asset,/my/path compressor,tar`   
 
 ## Contributing
 
