@@ -149,8 +149,8 @@ func (m *memoryDirectory) NewFile(path paths.Path) (newFile File) {
 	}
 
 	file := &memoryFile{
-		parent:   m,
-		name:     newPath,
+		parent: m,
+		name:   newPath,
 	}
 	file.WithPermission(m.PermissionSet())
 	m.files = append(m.files, file)
@@ -308,6 +308,6 @@ func copyDirectory(original Directory, new Directory) error {
 // NewRootDirectory returns a new root directory
 func NewRootDirectory() Directory {
 	return &memoryDirectory{
-		name:     paths.RootPath(),
+		name: paths.RootPath(),
 	}
 }

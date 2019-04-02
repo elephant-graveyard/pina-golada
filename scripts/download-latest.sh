@@ -75,4 +75,3 @@ case "${SYSTEM_UNAME}" in
     exit 1
     ;;
 esac
-
