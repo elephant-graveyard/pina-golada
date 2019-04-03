@@ -60,10 +60,7 @@ func (c *LabelParser) Parse(comment string, annotation Annotation) (e error) {
 	if e != nil {
 		return e
 	}
-	removedQuotes := strings.Replace(string(out), "\"", "", -1)
 
-	if err := yaml.Unmarshal([]byte(removedQuotes), annotation); err != nil {
-		return err
-	}
-	return nil
+	removedQuotes := strings.Replace(string(out), "\"", "", -1)
+	return yaml.Unmarshal([]byte(removedQuotes), annotation)
 }

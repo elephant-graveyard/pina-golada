@@ -62,9 +62,5 @@ func (p *PropertyParser) Parse(comment string, annotation Annotation) (e error) 
 	}
 
 	removedQuotes := strings.Replace(string(out), "\"", "", -1)
-
-	if err := yaml.Unmarshal([]byte(removedQuotes), annotation); err != nil {
-		return err
-	}
-	return nil
+	return yaml.Unmarshal([]byte(removedQuotes), annotation)
 }
