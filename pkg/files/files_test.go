@@ -63,7 +63,7 @@ var _ = Describe("should handle files properly", func() {
 		Expect(file).To(Not(BeNil()))
 
 		Expect(file.CopyContent(buffer)).To(BeNil())
-		Expect(string(buffer.Bytes())).To(BeEquivalentTo("test"))
+		Expect(buffer.String()).To(BeEquivalentTo("test"))
 	})
 
 	_ = It("should return the correct paths", func() {

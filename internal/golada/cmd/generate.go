@@ -39,7 +39,7 @@ import (
 
 var (
 	// GoFileSelector is the regex to select go files
-	GoFileSelector = regexp.MustCompile("(.*)\\.go")
+	GoFileSelector = regexp.MustCompile(`(.*)\.go`)
 
 	parserType string
 )

@@ -178,7 +178,6 @@ func (m *memoryDirectory) DeleteFile(path paths.Path) {
 			m.files = append(m.files[:index], m.files[index+1:]...)
 		}
 	}
-	return
 }
 
 // Directories lists all the directories in the directory
@@ -267,7 +266,6 @@ func (m *memoryDirectory) DeleteDirectory(path paths.Path) {
 			m.dirs = append(m.dirs[:index], m.dirs[index+1:]...)
 		}
 	}
-	return
 }
 
 // Parent returns the parent directory
