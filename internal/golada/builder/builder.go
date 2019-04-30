@@ -28,7 +28,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/homeport/pina-golada/internal/golada/logger"
+	"github.com/homeport/pina-golada/pkg/files/paths"
 	"go/format"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -147,7 +149,17 @@ func (b Builder) BuildFile() (by []byte, err error) {
 		}
 
 		directory := files.NewRootDirectory()
-		isDir, e := files.LoadFromDiskAndType(directory, methodAnnotation.Asset)
+		isDir := false
+
+		if i, e := os.Stat(methodAnnotation.Asset); e == nil {
+			// Create a sub directory inside if the target asset is a dir.
+			if i.IsDir() {
+				directory = directory.NewDirectory(paths.Of(i.Name()))
+				isDir = true
+			}
+		}
+
+		e := files.LoadFromDisk(directory, methodAnnotation.Asset)
 		if e != nil {
 			return nil, e
 		}

@@ -51,17 +51,16 @@ func WalkDirectoryTree(directory Directory, consumer func(d Directory)) {
 
 // LoadFromDisk loads the content of the paths into the directory recursively
 func LoadFromDisk(directory Directory, path string) (e error) {
-	_, e = LoadFromDiskAndType(directory, path)
-	return e
+	return loadFromDisk(directory, path)
 }
 
-// LoadFromDiskAndType loads the content of the paths into the directory recursively.
+// loadFromDisk loads the content of the paths into the directory recursively.
 // This also returns true if the file located under the path is a directory or false
 // if the file at the path is a flat file.
-func LoadFromDiskAndType(directory Directory, path string) (isDir bool, e error) {
+func loadFromDisk(directory Directory, path string) (e error) {
 	info, statError := os.Stat(path)
 	if statError != nil {
-		return false, statError
+		return statError
 	}
 
 	if info.IsDir() {
@@ -69,27 +68,27 @@ func LoadFromDiskAndType(directory Directory, path string) (isDir bool, e error)
 
 		directoryContent, e := ioutil.ReadDir(path)
 		if e != nil {
-			return true, e
+			return e
 		}
 
 		for _, file := range directoryContent {
 			if file.IsDir() {
-				if err := LoadFromDisk(directory.NewDirectory(paths.Of(file.Name())).WithPermission(file.Mode()), filepath.Join(path, file.Name())); err != nil {
-					return true, err
+				if err := loadFromDisk(directory.NewDirectory(paths.Of(file.Name())).WithPermission(file.Mode()), filepath.Join(path, file.Name())); err != nil {
+					return err
 				}
 			} else {
 				if err := readFileInto(directory, filepath.Join(path, file.Name())); err != nil {
-					return true, err
+					return err
 				}
 			}
 		}
-		return true, nil
+		return nil
 	}
 
 	if err := readFileInto(directory, path); err != nil {
-		return false, err
+		return err
 	}
-	return false, nil
+	return nil
 }
 
 func readFileInto(directory Directory, path string) (e error) {
