@@ -26,6 +26,7 @@ GO111MODULE=on ginkgo -r \
   --randomizeAllSpecs \
   --randomizeSuites \
   --failOnPending \
+  --slowSpecThreshold=30 \
   --nodes=4 \
   --compilers=2 \
   --race \

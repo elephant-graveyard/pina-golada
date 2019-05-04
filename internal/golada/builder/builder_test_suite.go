@@ -28,5 +28,5 @@ type DevNullWriter struct {
 
 // Write writes literally nothing
 func (DevNullWriter) Write(p []byte) (n int, err error) {
-	return 0, nil
+	return len(p), nil
 }

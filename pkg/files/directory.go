@@ -306,6 +306,7 @@ func copyDirectory(original Directory, new Directory) error {
 // NewRootDirectory returns a new root directory
 func NewRootDirectory() Directory {
 	return &memoryDirectory{
-		name: paths.RootPath(),
+		name:     paths.RootPath(),
+		PermBits: 0777,
 	}
 }
