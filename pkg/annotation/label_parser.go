@@ -51,7 +51,7 @@ func (c *LabelParser) Parse(comment string, annotation Annotation) (e error) {
 	keyValuePair := strings.Split(s, " ")
 	for _, paired := range keyValuePair {
 		keyToValue := strings.Split(paired, ",")
-		if len(keyValuePair) >= 2 {
+		if len(keyToValue) >= 2 {
 			foundAnnotation[keyToValue[0]] = keyToValue[1]
 		}
 	}

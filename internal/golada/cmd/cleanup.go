@@ -45,37 +45,42 @@ var cleanupCommand = &cobra.Command{
 			l = logger.NewDefaultLogger(os.Stdout, logger.Info)
 		}
 
-		e := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-			if GoFileSelector.Match([]byte(info.Name())) {
-				file, err := os.Open(path)
-				if err != nil {
-					return err
-				}
-
-				fileReader := bufio.NewReader(file)
-				line, _, err := fileReader.ReadLine()
-				if err != nil {
-					_ = file.Close()
-					return err
-				}
-
-				if err := file.Close(); err != nil {
-					return err
-				}
-				if strings.EqualFold(string(line), builder.IdentifierString) {
-					if err := os.Remove(path); err != nil {
-						return err
-					}
-					l.Debug("Gray{Debug➤ Removed pina-golada file} LimeGreen{%s}", file.Name())
-				}
-			}
-			return nil
-		})
-		if e != nil {
-			log.Fatalf("could not iterrate over the files in this directory %s", e.Error())
-		}
-		l.Info("Aqua{%s}➤ Cleaned project from pina-golada file", "Pina-Golada")
+		Cleanup(".", l)
 	},
+}
+
+// Cleanup cleans the given path of all pina-golada generated files
+func Cleanup(path string, l logger.Logger) {
+	e := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if GoFileSelector.Match([]byte(info.Name())) {
+			file, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+
+			fileReader := bufio.NewReader(file)
+			line, _, err := fileReader.ReadLine()
+			if err != nil {
+				_ = file.Close()
+				return err
+			}
+
+			if err := file.Close(); err != nil {
+				return err
+			}
+			if strings.EqualFold(string(line), builder.IdentifierString) {
+				if err := os.Remove(path); err != nil {
+					return err
+				}
+				l.Debug("Gray{Debug➤ Removed pina-golada file} LimeGreen{%s}", file.Name())
+			}
+		}
+		return nil
+	})
+	if e != nil {
+		log.Fatalf("could not iterrate over the files in this directory %s", e.Error())
+	}
+	l.Info("Aqua{%s}➤ Cleaned project from pina-golada file", "Pina-Golada")
 }
 
 func init() {
