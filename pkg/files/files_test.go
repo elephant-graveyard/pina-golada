@@ -24,6 +24,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -172,6 +173,11 @@ var _ = Describe("should handle files properly", func() {
 	})
 
 	_ = It("should overwrite permission sets on files", func() {
+		if IsOS("windows") {
+			Skip("Skipped on windows")
+			return
+		}
+
 		pathToTestDir := "../../assets/tests/issue-51/file"
 		pathToTestFile := filepath.Join(pathToTestDir, "permission.txt")
 
@@ -188,6 +194,11 @@ var _ = Describe("should handle files properly", func() {
 	})
 
 	_ = It("should overwrite permission sets on directories", func() {
+		if IsOS("windows") {
+			Skip("Skipped on windows")
+			return
+		}
+
 		pathToTestDir := "../../assets/tests/issue-51/directory"
 		pathToTestTarget := filepath.Join(pathToTestDir, "permission")
 
@@ -208,4 +219,8 @@ func GetFilePermission(path string) os.FileMode {
 	info, e := os.Stat(path)
 	Expect(e).To(Not(HaveOccurred()))
 	return info.Mode()
+}
+
+func IsOS(os string) bool {
+	return runtime.GOOS == os
 }

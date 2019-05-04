@@ -165,6 +165,10 @@ func (b Builder) BuildFile() (by []byte, err error) {
 			return nil, e
 		}
 
+		for _, file := range topLevelDir.Files() {
+			b.logger.Debug("Gray{Debug➤ Found asset file} White{%s} with permission White{%s}",
+				file.Name().String(), file.PermissionSet().String())
+		}
 		files.WalkDirectoryTree(topLevelDir, func(d files.Directory) {
 			b.logger.Debug("Gray{Debug➤ Found asset directory} White{%s} with permission White{%s}",
 				d.Name().String(), d.PermissionSet().String())
