@@ -149,6 +149,7 @@ func (b Builder) BuildFile() (by []byte, err error) {
 		}
 
 		directory := files.NewRootDirectory()
+		topLevelDir := directory // Keep a copy of the top level directory anyway to compress against later
 		isDir := false
 
 		if i, e := os.Stat(methodAnnotation.Asset); e == nil {
@@ -164,8 +165,13 @@ func (b Builder) BuildFile() (by []byte, err error) {
 			return nil, e
 		}
 
-		files.WalkFileTree(directory, func(file files.File) {
-			b.logger.Debug("Gray{Debug➤ Found asset file} White{%s}", file.Name().String())
+		files.WalkDirectoryTree(topLevelDir, func(d files.Directory) {
+			b.logger.Debug("Gray{Debug➤ Found asset directory} White{%s} with permission White{%s}",
+				d.Name().String(), d.PermissionSet().String())
+			for _, file := range d.Files() {
+				b.logger.Debug("Gray{Debug➤ Found asset file} White{%s} with permission White{%s}",
+					file.Name().String(), file.PermissionSet().String())
+			}
 		})
 
 		compressorType := compressor.DefaultRegistry.Find(methodAnnotation.Compressor)
@@ -173,7 +179,7 @@ func (b Builder) BuildFile() (by []byte, err error) {
 			return nil, errors.New("could not find compressor for " + methodAnnotation.Compressor)
 		}
 		buffer := &bytes.Buffer{}
-		if err := compressorType.Compress(directory, buffer); err != nil {
+		if err := compressorType.Compress(topLevelDir, buffer); err != nil {
 			return nil, err
 		}
 
