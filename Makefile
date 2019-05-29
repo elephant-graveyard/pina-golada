@@ -23,8 +23,8 @@
 all: analysis test build
 
 clean:
+	@GO111MODULE=on go clean -i -cache -testcache $(shell go list ./...)
 	@rm -rf binaries
-	@GO111MODULE=on go clean -r -cache
 
 analysis:
 	@scripts/analysis.sh
