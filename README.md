@@ -76,7 +76,7 @@ Here are the currently supported `parser` values:
 
 We are happy to have other people contributing to the project. If you decide to do that, here's how to:
 
-- get a Go development environment with version 1.11 or greater
+- get a Go development environment with version 1.12 or greater
 - fork the project
 - create a new branch
 - make your changes
@@ -112,7 +112,7 @@ docker run \
   --rm \
   --volume $GOPATH/src/github.com/homeport/pina-golada:/go/src/github.com/homeport/pina-golada \
   --workdir /go/src/github.com/homeport/pina-golada \
-  golang:1.11 /bin/bash
+  golang:1.12 /bin/bash
 ```
 
 ### Git pre-commit hooks
