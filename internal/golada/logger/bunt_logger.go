@@ -26,9 +26,10 @@ package logger
 
 import (
 	"fmt"
-	"github.com/homeport/gonvenience/pkg/v1/bunt"
 	"io"
 	"strings"
+
+	"github.com/gonvenience/bunt"
 )
 
 // LogLevel defines the type of level the logger will log at
