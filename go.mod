@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/gonvenience/bunt v1.1.1
-	github.com/onsi/ginkgo v1.12.3
+	github.com/onsi/ginkgo v1.13.0
 	github.com/onsi/gomega v1.10.1
 	github.com/spf13/cobra v0.0.7
 	gopkg.in/yaml.v2 v2.3.0
