@@ -1,7 +1,7 @@
 ---
 language: go
 go:
-  - 1.12.x
+  - 1.14.x
 
 install:
   - curl --silent --location https://goo.gl/g1CpPX | bash -s v1.3.0 # Golang dev tools including pre-compiled Ginkgo and other useful tools
@@ -22,5 +22,5 @@ deploy:
   file_glob: true
   file: binaries/*
   on:
-    condition: $TRAVIS_GO_VERSION =~ ^1\.12
+    condition: $TRAVIS_GO_VERSION =~ ^1\.14
     tags: true
