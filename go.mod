@@ -1,6 +1,6 @@
 module github.com/homeport/pina-golada
 
-go 1.12
+go 1.14
 
 require (
 	github.com/gonvenience/bunt v1.3.0
