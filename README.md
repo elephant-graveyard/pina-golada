@@ -1,6 +1,6 @@
 # Pina-Golada /pi:nɑ:-goʊlɑ:dɑ:/
 
-[![License](https://img.shields.io/github/license/homeport/pina-golada.svg)](https://github.com/homeport/pina-golada/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/homeport/pina-golada.svg)](https://github.com/homeport/pina-golada/blob/main/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/homeport/pina-golada)](https://goreportcard.com/report/github.com/homeport/pina-golada)
 [![Build Status](https://travis-ci.org/homeport/pina-golada.svg?branch=develop)](https://travis-ci.org/homeport/pina-golada)
 [![GoDoc](https://godoc.org/github.com/homeport/pina-golada?status.svg)](https://godoc.org/github.com/homeport/pina-golada)
@@ -131,4 +131,4 @@ EOS
 
 ## License
 
-Licensed under [MIT License](https://github.com/homeport/pina-golada/blob/master/LICENSE)
+Licensed under [MIT License](https://github.com/homeport/pina-golada/blob/main/LICENSE)
