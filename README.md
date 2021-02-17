@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/github/license/homeport/pina-golada.svg)](https://github.com/homeport/pina-golada/blob/main/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/homeport/pina-golada)](https://goreportcard.com/report/github.com/homeport/pina-golada)
-[![Build Status](https://travis-ci.org/homeport/pina-golada.svg?branch=develop)](https://travis-ci.org/homeport/pina-golada)
-[![GoDoc](https://godoc.org/github.com/homeport/pina-golada?status.svg)](https://godoc.org/github.com/homeport/pina-golada)
+[![Build and Tests](https://github.com/homeport/pina-golada/workflows/Build%20and%20Tests/badge.svg)](https://github.com/homeport/pina-golada/actions?query=workflow%3A%22Build+and+Tests%22)
+[![Go Reference](https://pkg.go.dev/badge/github.com/homeport/pina-golada.svg)](https://pkg.go.dev/github.com/homeport/pina-golada)
 [![Release](https://img.shields.io/github/release/homeport/pina-golada.svg)](https://github.com/homeport/pina-golada/releases/latest)
 
 ![pina-golada](.docs/logo-small.png?raw=true "Pina-Golada logo by Michael Schepanske")
@@ -18,8 +18,6 @@ Tools that are known to use `pina-golada` to package assets into their program c
 
 - [**watchful**](https://github.com/homeport/watchful) - tool to measure the disruption caused by a change to a Cloud Foundry environment
 - [**gonut**](https://github.com/homeport/gonut) - portable tool to help you verify whether you can push a sample app to Cloud Foundry
-
-_This project is work in progress._
 
 ## Installation
 
