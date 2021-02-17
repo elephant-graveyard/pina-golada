@@ -23,7 +23,7 @@
 set -euo pipefail
 
 ORG=homeport
-REPO=dyff
+REPO=pina-golada
 
 if ! hash curl 2>/dev/null; then
   echo "Required tool curl is not installed."
