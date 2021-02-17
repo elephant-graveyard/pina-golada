@@ -1,0 +1,58 @@
+---
+builds:
+  - env:
+    - CGO_ENABLED=0
+    goos:
+    - linux
+    - darwin
+    - windows
+    goarch:
+    - amd64
+    main: ./cmd/golada/main.go
+    flags:
+    - -tags
+    - netgo
+    - -trimpath
+    ldflags:
+    - -s -w -extldflags "-static" -X github.com/homeport/pina-golada/internal/cmd.version={{.Version}}
+    mod_timestamp: '{{ .CommitTimestamp }}'
+
+archives:
+- replacements:
+    darwin: darwin
+    linux: linux
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+release:
+  name_template: "{{.ProjectName}} release v{{.Version}}"
+
+changelog:
+  skip: false
+  sort: ""
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+
+brews:
+  - tap:
+      owner: homeport
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    url_template: "https://github.com/homeport/pina-golada/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    download_strategy: CurlDownloadStrategy
+    commit_author:
+      name: GoReleaser Bot
+      email: goreleaser@carlosbecker.com
+    folder: HomebrewFormula
+    homepage: "https://github.com/homeport/pina-golada"
+    description: "pina-golada - a simple asset tool for go, which generates interface implementations that provide files/folders in the final build, without rendering them in the source code themselve"
+    license: "MIT"
+    skip_upload: false
+    test: |
+      system "#{bin}/pina-golada version"
