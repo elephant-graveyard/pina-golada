@@ -32,7 +32,7 @@ Installation options are either using Homebrew or a convenience download script.
 - Use a convenience script to download the latest release to install it in a suitable location on your local machine (works for Linux and macOS systems):
 
   ```sh
-  curl -fsL https://ibm.biz/Bd2645 | bash
+  curl -fsL https://git.io/JtMNA | bash
   ```
 
 ## Usage example
@@ -68,7 +68,7 @@ Here are the currently supported `parser` values:
 - `csv`
     - Example: `@pgl(asset,/my/path;compressor,tar)`
 - `build-tag`
-    - Example: `+pgl asset,/my/path compressor,tar`   
+    - Example: `+pgl asset,/my/path compressor,tar`
 
 ## Contributing
 
